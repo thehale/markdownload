@@ -15,15 +15,19 @@ This is a full port of the [MarkDownload browser extension](https://github.com/d
 
 ## Installation
 
-### Manual (recommended for testing)
+### Download the pre-built ZIP (easiest)
 
-1. Copy the three plugin files into your vault's plugins folder:
+The **Build Obsidian Plugin** GitHub Actions workflow runs automatically on every push and produces a ready-to-install ZIP.
+
+1. Open the [Actions tab](../../actions/workflows/build-obsidian-plugin.yml) and click the latest successful run.
+2. Download the `markdownload-obsidian-plugin` artifact — it contains `main.js`, `manifest.json`, and `styles.css`.
+3. Unzip and copy the three files into your vault's plugins folder:
    ```
    <vault>/.obsidian/plugins/markdownload/main.js
    <vault>/.obsidian/plugins/markdownload/manifest.json
    <vault>/.obsidian/plugins/markdownload/styles.css
    ```
-2. In Obsidian → **Settings → Community plugins → Installed plugins**, enable **MarkDownload**.
+4. In Obsidian → **Settings → Community plugins → Installed plugins**, enable **MarkDownload**.
 
 ### Building from source
 
@@ -31,6 +35,7 @@ This is a full port of the [MarkDownload browser extension](https://github.com/d
 cd obsidian-plugin
 npm install
 npm run build        # produces main.js (minified)
+npm run package      # build + zip → dist/markdownload-obsidian-plugin.zip
 npm run dev          # watch mode with source maps
 ```
 
