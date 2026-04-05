@@ -428,6 +428,7 @@ export class MarkdownloadSettingTab extends PluginSettingTab {
 class ImportSettingsModal extends Modal {
   private readonly onImport: (json: string) => void;
   private json = "";
+  private textArea: HTMLTextAreaElement | null = null;
 
   constructor(app: App, onImport: (json: string) => void) {
     super(app);
@@ -438,15 +439,46 @@ class ImportSettingsModal extends Modal {
     const { contentEl } = this;
     contentEl.createEl("h2", { text: "Import settings" });
 
+    // File picker row
     new Setting(contentEl)
-      .setName("Settings JSON")
+      .setName("Choose file")
+      .setDesc("Select a markdownload-settings.json file from your device.")
+      .addButton((btn) =>
+        btn.setButtonText("Browse…").onClick(() => {
+          const fileInput = document.createElement("input");
+          fileInput.type = "file";
+          fileInput.accept = ".json,application/json";
+          fileInput.addEventListener("change", () => {
+            const file = fileInput.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              const text = e.target?.result as string ?? "";
+              this.json = text;
+              if (this.textArea) {
+                this.textArea.value = text;
+              }
+            };
+            reader.onerror = () => {
+              new Notice("MarkDownload: could not read the selected file.");
+            };
+            reader.readAsText(file);
+          });
+          fileInput.click();
+        })
+      );
+
+    // Manual paste row
+    new Setting(contentEl)
+      .setName("Or paste JSON")
       .setDesc("Paste the contents of your exported markdownload-settings.json file.")
       .addTextArea((ta) => {
-        ta.setPlaceholder('{ "headingStyle": "atx", … }')
+        ta.setPlaceholder('{ "headingStyle": "atx", ... }')
           .onChange((v) => { this.json = v; });
         ta.inputEl.rows = 10;
         ta.inputEl.style.width = "100%";
         ta.inputEl.style.fontFamily = "monospace";
+        this.textArea = ta.inputEl;
         setTimeout(() => ta.inputEl.focus(), 50);
       });
 
@@ -467,6 +499,7 @@ class ImportSettingsModal extends Modal {
   }
 
   onClose() {
+    this.textArea = null;
     this.contentEl.empty();
   }
 }
