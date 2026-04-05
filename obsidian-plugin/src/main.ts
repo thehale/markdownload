@@ -29,7 +29,7 @@ export default class MarkdownloadPlugin extends Plugin {
     // ── Command: clip a URL ──────────────────────────────────────────────
     this.addCommand({
       id: "clip-url",
-      name: "Clip URL to Markdown",
+      name: "Clip URL",
       callback: () => this.showClipUrlModal(),
     });
 
@@ -43,9 +43,12 @@ export default class MarkdownloadPlugin extends Plugin {
         // Accept ?url=, ?text=, or ?clip= for flexibility
         const url = params.url || params.text || params.clip;
         if (url) {
-          const saveLocation =
-            params.folder || this.settings.defaultSaveLocation;
-          await this.clipUrl(url, saveLocation);
+          if (params.folder) {
+            await this.clipUrl(url, params.folder);
+          } else {
+            // URL provided but no folder – ask where to save
+            this.showClipUrlModal(url);
+          }
         } else {
           // No URL in the params – fall through to the interactive modal
           this.showClipUrlModal();
@@ -75,13 +78,14 @@ export default class MarkdownloadPlugin extends Plugin {
 
   // ── UI helpers ────────────────────────────────────────────────────────────
 
-  showClipUrlModal() {
+  showClipUrlModal(initialUrl?: string) {
     new ClipUrlModal(
       this.app,
       this.settings.defaultSaveLocation,
       async (url, saveLocation) => {
         await this.clipUrl(url, saveLocation);
-      }
+      },
+      initialUrl
     ).open();
   }
 

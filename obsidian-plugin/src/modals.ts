@@ -9,16 +9,18 @@ import {
 // ─── Clip URL modal ───────────────────────────────────────────────────────────
 
 export class ClipUrlModal extends Modal {
-  private url = "";
+  private url: string;
   private saveLocation: string;
   private readonly onSubmit: (url: string, saveLocation: string) => void;
 
   constructor(
     app: App,
     defaultSaveLocation: string,
-    onSubmit: (url: string, saveLocation: string) => void
+    onSubmit: (url: string, saveLocation: string) => void,
+    initialUrl?: string
   ) {
     super(app);
+    this.url = initialUrl ?? "";
     this.saveLocation = defaultSaveLocation;
     this.onSubmit = onSubmit;
   }
@@ -28,17 +30,22 @@ export class ClipUrlModal extends Modal {
     contentEl.createEl("h2", { text: "Clip URL to Markdown" });
 
     // URL input
+    let urlFocused = false;
     new Setting(contentEl)
       .setName("URL")
       .setDesc("Web page to clip")
       .addText((text) => {
         text
           .setPlaceholder("https://example.com/article")
+          .setValue(this.url)
           .onChange((value) => {
             this.url = value.trim();
           });
-        // Auto-focus on open
-        setTimeout(() => text.inputEl.focus(), 50);
+        // Auto-focus only when no URL was pre-filled
+        if (!this.url) {
+          urlFocused = true;
+          setTimeout(() => text.inputEl.focus(), 50);
+        }
       });
 
     // Save-location input with folder-browse button
@@ -54,6 +61,10 @@ export class ClipUrlModal extends Modal {
           .onChange((value) => {
             this.saveLocation = value;
           });
+        // Auto-focus folder field when URL was pre-filled
+        if (!urlFocused) {
+          setTimeout(() => text.inputEl.focus(), 50);
+        }
       })
       .addButton((btn) =>
         btn
