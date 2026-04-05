@@ -1,0 +1,26 @@
+{
+  "name": "obsidian-markdownload",
+  "version": "1.0.0",
+  "description": "MarkDownload Obsidian plugin — clip web pages to Markdown",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "node esbuild.config.mjs production"
+  },
+  "keywords": [],
+  "author": "Gordon Pedersen",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/turndown": "^5.0.4",
+    "builtin-modules": "^4.0.0",
+    "esbuild": "^0.25.0",
+    "obsidian": "1.12.3",
+    "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.6.0",
+    "turndown": "^7.2.4",
+    "turndown-plugin-gfm": "^1.0.2"
+  }
+}
