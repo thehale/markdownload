@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, Modal, Notice, PluginSettingTab, Setting } from "obsidian";
 import type MarkdownloadPlugin from "./main";
 
 export interface MarkdownloadSettings {
@@ -374,26 +374,99 @@ export class MarkdownloadSettingTab extends PluginSettingTab {
           })
       );
 
-    // ── Android share ─────────────────────────────────────────────────────
-    containerEl.createEl("h3", { text: "Android share integration" });
+    // ── Import / Export ───────────────────────────────────────────────────
+    containerEl.createEl("h3", { text: "Import / Export settings" });
 
-    const shareDesc = containerEl.createDiv();
-    shareDesc.innerHTML = `
-      <p>On Android, you can share URLs directly to Obsidian using the 
-      <code>obsidian://markdownload?url=…</code> URI scheme.</p>
-      <p>To add a <strong>Share to MarkDownload</strong> shortcut on Android:</p>
-      <ol>
-        <li>Install an automation app such as 
-          <a href="https://play.google.com/store/apps/details?id=net.dinglisch.android.taskerm">Tasker</a> or 
-          <a href="https://play.google.com/store/apps/details?id=com.joaomgcd.autotools">MacroDroid</a>.</li>
-        <li>Create an action that opens the URL 
-          <code>obsidian://markdownload?url=%s</code> where <code>%s</code> is the shared URL.</li>
-        <li>Register it as a share target so any browser's <em>Share</em> button shows it.</li>
-      </ol>
-      <p>You can also trigger the handler from any app that supports custom URL schemes (e.g. HTTP Shortcuts, Tasker, Automate).</p>
-    `;
-    shareDesc.style.fontSize = "0.875em";
-    shareDesc.style.color = "var(--text-muted)";
-    shareDesc.style.lineHeight = "1.6";
+    new Setting(containerEl)
+      .setName("Export settings")
+      .setDesc("Download your current settings as a JSON file.")
+      .addButton((btn) =>
+        btn
+          .setButtonText("Export")
+          .onClick(() => {
+            const json = JSON.stringify(this.plugin.settings, null, 2);
+            const blob = new Blob([json], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "markdownload-settings.json";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+          })
+      );
+
+    new Setting(containerEl)
+      .setName("Import settings")
+      .setDesc("Load settings from a previously exported JSON file.")
+      .addButton((btn) =>
+        btn
+          .setButtonText("Import")
+          .onClick(() => new ImportSettingsModal(this.app, async (json) => {
+            try {
+              const parsed = JSON.parse(json);
+              this.plugin.settings = Object.assign(
+                {},
+                DEFAULT_SETTINGS,
+                parsed
+              );
+              await this.plugin.saveSettings();
+              this.display();
+              new Notice("MarkDownload: settings imported.");
+            } catch (err) {
+              console.error("MarkDownload: settings import error:", err);
+              new Notice(`MarkDownload: invalid settings JSON – ${String(err)}`);
+            }
+          }).open())
+      );
+  }
+}
+
+// ─── Import modal ─────────────────────────────────────────────────────────────
+
+class ImportSettingsModal extends Modal {
+  private readonly onImport: (json: string) => void;
+  private json = "";
+
+  constructor(app: App, onImport: (json: string) => void) {
+    super(app);
+    this.onImport = onImport;
+  }
+
+  onOpen() {
+    const { contentEl } = this;
+    contentEl.createEl("h2", { text: "Import settings" });
+
+    new Setting(contentEl)
+      .setName("Settings JSON")
+      .setDesc("Paste the contents of your exported markdownload-settings.json file.")
+      .addTextArea((ta) => {
+        ta.setPlaceholder('{ "headingStyle": "atx", … }')
+          .onChange((v) => { this.json = v; });
+        ta.inputEl.rows = 10;
+        ta.inputEl.style.width = "100%";
+        ta.inputEl.style.fontFamily = "monospace";
+        setTimeout(() => ta.inputEl.focus(), 50);
+      });
+
+    new Setting(contentEl)
+      .addButton((btn) =>
+        btn
+          .setButtonText("Import")
+          .setCta()
+          .onClick(() => {
+            if (!this.json.trim()) return;
+            this.close();
+            this.onImport(this.json);
+          })
+      )
+      .addButton((btn) =>
+        btn.setButtonText("Cancel").onClick(() => this.close())
+      );
+  }
+
+  onClose() {
+    this.contentEl.empty();
   }
 }
