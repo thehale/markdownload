@@ -1,3 +1,9 @@
+// NOTE: The core conversion logic in this file (turndown, getArticleFromDom,
+// textReplace, generateValidFileName, etc.) is mirrored in
+// src/shared/converter.ts which is the canonical TypeScript source used by the
+// Obsidian plugin.  When updating conversion logic, update BOTH files until
+// the browser extension is migrated to ES modules.
+
 // log some info
 browser.runtime.getPlatformInfo().then(async platformInfo => {
   const browserInfo = browser.runtime.getBrowserInfo ? await browser.runtime.getBrowserInfo() : "Can't get browser info"

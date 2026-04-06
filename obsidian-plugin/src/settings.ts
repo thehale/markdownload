@@ -1,60 +1,17 @@
 import { App, Modal, Notice, PluginSettingTab, Setting } from "obsidian";
 import type MarkdownloadPlugin from "./main";
+import {
+  SharedConversionOptions,
+  SHARED_DEFAULTS,
+} from "../../src/shared/default-options";
 
-export interface MarkdownloadSettings {
-  // Markdown formatting
-  headingStyle: "atx" | "setext";
-  hr: string;
-  bulletListMarker: "-" | "*" | "+";
-  codeBlockStyle: "fenced" | "indented";
-  fence: "```" | "~~~";
-  emDelimiter: "_" | "*";
-  strongDelimiter: "**" | "__";
-  linkStyle: "inlined" | "referenced" | "stripLinks";
-  linkReferenceStyle: "full" | "collapsed" | "shortcut";
-  imageStyle:
-    | "markdown"
-    | "base64"
-    | "originalSource"
-    | "noImage"
-    | "obsidian"
-    | "obsidian-nofolder";
-  imageRefStyle: "inlined" | "referenced";
-  // Templates
-  frontmatter: string;
-  backmatter: string;
-  title: string;
-  includeTemplate: boolean;
-  // Files & images
-  downloadImages: boolean;
-  imagePrefix: string;
-  disallowedChars: string;
-  turndownEscape: boolean;
+export interface MarkdownloadSettings extends SharedConversionOptions {
   // Obsidian-specific
   defaultSaveLocation: string;
 }
 
 export const DEFAULT_SETTINGS: MarkdownloadSettings = {
-  headingStyle: "atx",
-  hr: "___",
-  bulletListMarker: "-",
-  codeBlockStyle: "fenced",
-  fence: "```",
-  emDelimiter: "_",
-  strongDelimiter: "**",
-  linkStyle: "inlined",
-  linkReferenceStyle: "full",
-  imageStyle: "markdown",
-  imageRefStyle: "inlined",
-  frontmatter:
-    "---\ncreated: {date:YYYY-MM-DDTHH:mm:ss} (UTC {date:Z})\ntags: [{keywords}]\nsource: {baseURI}\nauthor: {byline}\n---\n\n# {pageTitle}\n\n> ## Excerpt\n> {excerpt}\n\n---",
-  backmatter: "",
-  title: "{pageTitle}",
-  includeTemplate: false,
-  downloadImages: false,
-  imagePrefix: "{pageTitle}/",
-  disallowedChars: "[]#^",
-  turndownEscape: true,
+  ...SHARED_DEFAULTS,
   defaultSaveLocation: "",
 };
 

@@ -1,4 +1,7 @@
 // these are the default options
+// NOTE: The shared conversion options (headingStyle, hr, etc.) are mirrored in
+// src/shared/default-options.ts which is the canonical TypeScript source used
+// by the Obsidian plugin.  When updating common defaults, update BOTH files.
 const defaultOptions = {
   headingStyle: "atx",
   hr: "___",

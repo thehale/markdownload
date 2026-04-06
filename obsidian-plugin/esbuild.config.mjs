@@ -23,6 +23,9 @@ const context = await esbuild.context({
     "@lezer/lr",
     ...builtins,
   ],
+  // Resolve npm packages from the plugin directory even when the source file
+  // lives in a sibling directory (e.g. ../../src/shared/).
+  nodePaths: ["node_modules"],
   format: "cjs",
   target: "es2018",
   logLevel: "info",
