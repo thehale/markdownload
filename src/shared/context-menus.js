@@ -1,7 +1,5 @@
-import { getOptions } from "./extension-options";
-
 // create the context menus
-export async function createMenus(): Promise<void> {
+async function createMenus() {
   const options = await getOptions();
 
   browser.contextMenus.removeAll();
@@ -62,9 +60,8 @@ export async function createMenus(): Promise<void> {
         checked: options.downloadImages
       }, () => { });
     } catch {
-      // Firefox for Android does not support tab context menus
-    }
 
+    }
     // add the download all tabs option to the page context menu as well
     browser.contextMenus.create({
       id: "download-markdown-alltabs",
@@ -131,14 +128,15 @@ export async function createMenus(): Promise<void> {
       title: "Copy Selected Tab URLs as Markdown Link List",
       contexts: ["all"]
     }, () => { });
-
+  
     browser.contextMenus.create({
       id: "separator-2",
       type: "separator",
       contexts: ["all"]
     }, () => { });
 
-    if (options.obsidianIntegration) {
+    if(options.obsidianIntegration){
+      // copy to clipboard actions
       browser.contextMenus.create({
         id: "copy-markdown-obsidian",
         title: "Send Text selection to Obsidian",
@@ -150,7 +148,6 @@ export async function createMenus(): Promise<void> {
         contexts: ["all"]
       }, () => { });
     }
-
     browser.contextMenus.create({
       id: "separator-3",
       type: "separator",

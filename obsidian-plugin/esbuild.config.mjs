@@ -1,10 +1,7 @@
 import esbuild from "esbuild";
 import process from "process";
 import builtins from "builtin-modules";
-import path from "path";
-import { fileURLToPath } from "url";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const prod = process.argv[2] === "production";
 
 const context = await esbuild.context({
@@ -26,11 +23,6 @@ const context = await esbuild.context({
     "@lezer/lr",
     ...builtins,
   ],
-  // Redirect `moment` imports to Obsidian's bundled copy so the shared
-  // converter doesn't bundle a second copy from npm.
-  alias: {
-    moment: path.resolve(__dirname, "src/moment-shim.ts"),
-  },
   // Resolve npm packages from the plugin directory even when the source file
   // lives in a sibling directory (e.g. ../../src/shared/).
   nodePaths: ["node_modules"],

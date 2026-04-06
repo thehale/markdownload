@@ -1,9 +1,0 @@
-# Built bundle — regenerate with `npm run build`
-background/background.bundle.js
-background/background.bundle.js.map
-
-# TypeScript output directory (when using tsc directly)
-dist/
-
-# Node dependencies
-node_modules/

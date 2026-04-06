@@ -1,4 +1,4 @@
-import moment from "moment";
+import { moment } from "obsidian";
 import { Readability } from "@mozilla/readability";
 import TurndownService from "turndown";
 // @ts-ignore – no bundled types for turndown-plugin-gfm
@@ -347,16 +347,6 @@ export function getArticleFromDom(
 
   const result: Article = {
     ...readabilityArticle,
-    // Readability fields can be null; coerce to string/number | undefined for Article
-    title: readabilityArticle.title ?? undefined,
-    content: readabilityArticle.content ?? undefined,
-    textContent: readabilityArticle.textContent ?? undefined,
-    length: readabilityArticle.length ?? undefined,
-    excerpt: readabilityArticle.excerpt ?? undefined,
-    byline: readabilityArticle.byline ?? undefined,
-    dir: readabilityArticle.dir ?? undefined,
-    siteName: readabilityArticle.siteName ?? undefined,
-    lang: readabilityArticle.lang ?? undefined,
     baseURI: baseUrl,
     pageTitle: dom.title || readabilityArticle.title || "",
     math,
@@ -433,8 +423,7 @@ export function turndownConvert(
   }
 
   tdService.use(gfm);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  tdService.keep(["iframe", "sub", "sup", "u", "ins", "del", "small", "big"] as any);
+  tdService.keep(["iframe", "sub", "sup", "u", "ins", "del", "small", "big"]);
 
   const imageList: Record<string, string> = {};
 
@@ -511,7 +500,7 @@ export function turndownConvert(
       }
       return refs;
     },
-  } as unknown as Parameters<typeof tdService.addRule>[1] & {
+  } as Parameters<typeof tdService.addRule>[1] & {
     references: string[];
     append: (this: { references: string[] }) => string;
   });
@@ -574,7 +563,6 @@ export function turndownConvert(
     return `\n\n${fence}${language}\n${code.replace(/\n$/, "")}\n${fence}\n\n`;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tdService.addRule("fencedCodeBlock", {
     filter(node: HTMLElement, opts: { codeBlockStyle: string }) {
       return (
@@ -587,10 +575,8 @@ export function turndownConvert(
     replacement(_content: string, node: HTMLElement, opts: { fence: string }) {
       return convertToFencedCodeBlock(node.firstChild as HTMLElement, opts);
     },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any);
+  });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tdService.addRule("pre", {
     filter(node: HTMLElement) {
       return (
@@ -602,8 +588,7 @@ export function turndownConvert(
     replacement(_content: string, node: HTMLElement, opts: { fence: string }) {
       return convertToFencedCodeBlock(node, opts);
     },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any);
+  });
 
   let markdown =
     options.frontmatter +

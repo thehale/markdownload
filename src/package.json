@@ -1,29 +1,13 @@
 {
-  "name": "markdownload-extension",
-  "version": "3.4.0",
-  "description": "MarkDownload browser extension — clip web pages to Markdown",
   "scripts": {
-    "build": "node build.mjs production",
-    "dev": "node build.mjs",
+    "npminstall": "npm install",
+    "build": "web-ext build",
     "start:firefoxdeveloper": "web-ext run -f firefoxdeveloperedition -u https://en.wikipedia.org/wiki/Special:Random --bc",
     "start:chromedevwin": "web-ext run -t chromium --chromium-binary \"C:\\Program Files\\Google\\Chrome Dev\\Application\\chrome.exe\" -u https://en.wikipedia.org/wiki/Special:Random --bc",
     "start:waveboxwin": "web-ext run -t chromium --chromium-binary %localappdata%/WaveboxApp/Application/wavebox.exe",
     "start:androidwin11": "adb connect 127.0.0.1:58526 && web-ext run -t firefox-android --adb-device 127.0.0.1:58526 --firefox-apk org.mozilla.fenix"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
-    "@types/turndown": "^5.0.4",
-    "@types/webextension-polyfill": "^0.12.5",
-    "builtin-modules": "^4.0.0",
-    "esbuild": "^0.25.0",
-    "typescript": "^5.7.0",
-    "web-ext": "^7.4.0",
-    "webextension-polyfill": "^0.12.0"
-  },
-  "dependencies": {
-    "@mozilla/readability": "^0.6.0",
-    "moment": "^2.30.1",
-    "turndown": "^7.2.4",
-    "turndown-plugin-gfm": "^1.0.2"
+    "web-ext": "^7.4.0"
   }
 }

@@ -1,9 +1,7 @@
 // these are the default options
-// NOTE: This file exists for the browser extension's options page (options.html),
-// which loads scripts as plain <script> tags.  The canonical source for shared
-// conversion defaults is src/shared/default-options.ts.  The background script
-// imports from the TypeScript source directly; this file is kept in sync
-// manually until the options page is also converted to use a bundler.
+// NOTE: The shared conversion options (headingStyle, hr, etc.) are mirrored in
+// src/shared/default-options.ts which is the canonical TypeScript source used
+// by the Obsidian plugin.  When updating common defaults, update BOTH files.
 const defaultOptions = {
   headingStyle: "atx",
   hr: "___",
