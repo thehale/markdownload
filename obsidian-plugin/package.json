@@ -9,8 +9,8 @@
     "package": "npm run build && node -e \"const{execSync}=require('child_process');execSync('mkdir -p dist && zip -j dist/markdownload-obsidian-plugin.zip main.js manifest.json styles.css',{stdio:'inherit'})\""
   },
   "keywords": [],
-  "author": "Gordon Pedersen",
-  "license": "MIT",
+  "author": "thehale",
+  "license": "MPL-2.0",
   "devDependencies": {
     "@types/node": "^22.0.0",
     "@types/turndown": "^5.0.4",
