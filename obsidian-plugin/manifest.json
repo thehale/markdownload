@@ -1,0 +1,10 @@
+{
+  "id": "markdownload",
+  "name": "MarkDownload",
+  "version": "1.0.0",
+  "minAppVersion": "1.0.0",
+  "description": "Clip any web page to Markdown and save it directly to your vault. Mirrors the MarkDownload browser extension.",
+  "author": "thehale",
+  "authorUrl": "https://github.com/thehale",
+  "isDesktopOnly": false
+}

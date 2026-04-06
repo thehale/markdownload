@@ -1,0 +1,18 @@
+/* MarkDownload Obsidian Plugin – minimal styles */
+
+/* Settings page */
+.markdownload-settings-info {
+  color: var(--text-muted);
+  font-size: 0.875em;
+  line-height: 1.6;
+}
+
+.markdownload-settings-info code {
+  background: var(--background-secondary);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+.markdownload-settings-info ol {
+  padding-left: 1.2em;
+}
