@@ -587,10 +587,10 @@ export function turndownConvert(
     replacement(_content: string, node: HTMLElement, opts: { fence: string }) {
       return convertToFencedCodeBlock(node.firstChild as HTMLElement, opts);
     },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any);
+  // The Turndown Rule type doesn't allow narrowing `opts` in the filter/replacement
+  // signatures; cast through unknown to avoid the mismatch.
+  } as unknown as Parameters<typeof tdService.addRule>[1]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tdService.addRule("pre", {
     filter(node: HTMLElement) {
       return (
@@ -602,8 +602,7 @@ export function turndownConvert(
     replacement(_content: string, node: HTMLElement, opts: { fence: string }) {
       return convertToFencedCodeBlock(node, opts);
     },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any);
+  } as unknown as Parameters<typeof tdService.addRule>[1]);
 
   let markdown =
     options.frontmatter +
