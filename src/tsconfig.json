@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2018",
+    "module": "ESNext",
+    // "bundler" is the correct strategy when esbuild (not tsc) handles module
+    // resolution at bundle time.  Requires TypeScript ≥ 5.0 (we use 5.7+).
+    "moduleResolution": "bundler",
+    "strict": true,
+    "lib": ["ES2018", "DOM"],
+    "skipLibCheck": true,
+    "noImplicitAny": true,
+    "outDir": "dist"
+  },
+  "include": ["background/**/*.ts", "shared/**/*.ts", "globals.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}

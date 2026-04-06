@@ -1,4 +1,4 @@
-import { moment } from "obsidian";
+import moment from "moment";
 import { Readability } from "@mozilla/readability";
 import TurndownService from "turndown";
 // @ts-ignore – no bundled types for turndown-plugin-gfm
@@ -129,7 +129,9 @@ function getImageFilename(
 
   const extension = filename.substring(filename.lastIndexOf("."));
   if (extension === filename) {
-    filename = filename + ".png";
+    // No extension found — use a sentinel that preDownloadImages can replace
+    // with the real MIME-based extension after fetching the image.
+    filename = filename + ".idunno";
   }
 
   filename = generateValidFileName(filename, options.disallowedChars);
@@ -347,6 +349,16 @@ export function getArticleFromDom(
 
   const result: Article = {
     ...readabilityArticle,
+    // Readability fields can be null; coerce to string/number | undefined for Article
+    title: readabilityArticle.title ?? undefined,
+    content: readabilityArticle.content ?? undefined,
+    textContent: readabilityArticle.textContent ?? undefined,
+    length: readabilityArticle.length ?? undefined,
+    excerpt: readabilityArticle.excerpt ?? undefined,
+    byline: readabilityArticle.byline ?? undefined,
+    dir: readabilityArticle.dir ?? undefined,
+    siteName: readabilityArticle.siteName ?? undefined,
+    lang: readabilityArticle.lang ?? undefined,
     baseURI: baseUrl,
     pageTitle: dom.title || readabilityArticle.title || "",
     math,
@@ -423,7 +435,8 @@ export function turndownConvert(
   }
 
   tdService.use(gfm);
-  tdService.keep(["iframe", "sub", "sup", "u", "ins", "del", "small", "big"]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tdService.keep(["iframe", "sub", "sup", "u", "ins", "del", "small", "big"] as any);
 
   const imageList: Record<string, string> = {};
 
@@ -500,7 +513,7 @@ export function turndownConvert(
       }
       return refs;
     },
-  } as Parameters<typeof tdService.addRule>[1] & {
+  } as unknown as Parameters<typeof tdService.addRule>[1] & {
     references: string[];
     append: (this: { references: string[] }) => string;
   });
@@ -563,6 +576,7 @@ export function turndownConvert(
     return `\n\n${fence}${language}\n${code.replace(/\n$/, "")}\n${fence}\n\n`;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tdService.addRule("fencedCodeBlock", {
     filter(node: HTMLElement, opts: { codeBlockStyle: string }) {
       return (
@@ -575,7 +589,9 @@ export function turndownConvert(
     replacement(_content: string, node: HTMLElement, opts: { fence: string }) {
       return convertToFencedCodeBlock(node.firstChild as HTMLElement, opts);
     },
-  });
+  // The Turndown Rule type doesn't allow narrowing `opts` in the filter/replacement
+  // signatures; cast through unknown to avoid the mismatch.
+  } as unknown as Parameters<typeof tdService.addRule>[1]);
 
   tdService.addRule("pre", {
     filter(node: HTMLElement) {
@@ -588,7 +604,7 @@ export function turndownConvert(
     replacement(_content: string, node: HTMLElement, opts: { fence: string }) {
       return convertToFencedCodeBlock(node, opts);
     },
-  });
+  } as unknown as Parameters<typeof tdService.addRule>[1]);
 
   let markdown =
     options.frontmatter +

@@ -2,7 +2,7 @@
 /* this list has been taken from http://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types
  * Last updated 2021-02-15
 */
-const mimedb = {
+export const mimedb: Record<string, string> = {
 "application/andrew-inset":"ez",
 "application/applixware":"aw",
 "application/atom+xml":"atom",
