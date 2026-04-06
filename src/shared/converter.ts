@@ -129,7 +129,9 @@ function getImageFilename(
 
   const extension = filename.substring(filename.lastIndexOf("."));
   if (extension === filename) {
-    filename = filename + ".png";
+    // No extension found — use a sentinel that preDownloadImages can replace
+    // with the real MIME-based extension after fetching the image.
+    filename = filename + ".idunno";
   }
 
   filename = generateValidFileName(filename, options.disallowedChars);
